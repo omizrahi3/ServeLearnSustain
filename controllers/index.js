@@ -35,7 +35,7 @@ module.exports  = function(app, pool) {
                     pending_city_officials.push(pending_official);
                 });
                 console.log(pending_city_officials);
-                res.locals.officals = pending_city_officials;
+                res.locals.officials = pending_city_officials;
                 res.render('admin-pending-city-officials');
             });
         });
