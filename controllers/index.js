@@ -2,9 +2,9 @@ var mysql = require('mysql');
 
 module.exports  = function(app, pool) {
 
-    app.get('/amy', function (req, res) {
+    app.get('/admin-dashboard', function (req, res) {
         console.log("GET Request /");
-        res.render('');
+        res.render('admin-dashboard');
     });
 
     app.get('/', function (req, res) {
