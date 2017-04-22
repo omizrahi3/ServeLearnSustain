@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href='css/dashboard.css'>
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
+    <script src="js/dashboard.js"></script>
+
+  </head>
+
+  <body>
+
+
+    <!-- City Official Functionalities -->
+    <!-- Add New Data Point -->
+    <div class="container">
+      <div class="main">
+        <div class="card mt-5">
+          <form class="card-block">
+              <h2 class="display-5 text-center">POI Detail</h2>
+              <!-- POI Type -->
+              <div class="form-group">
+                <label for="type">Type</label>
+                <select class="custom-select mx-4" id="type">
+                  <option selected>Select Type</option>
+                </select>
+              </div>
+              <!-- Data Value -->
+              <div class="form-group">
+                <div class="form-group row">
+                  <label for="dataValue1" class="col-4 col-form-label">Data Value</label>
+                  <div class="col-2">
+                    <input class="form-control" type="number" id="dataValue1">
+                  </div>
+                  <label for="dataValue2" class="col-2 col-form-label">to</label>
+                  <div class="col-2">
+                    <input class="form-control" type="number" id="dataValue2">
+                  </div>
+                </div>
+              </div>
+              <!-- Time and Date of Data Reading -->
+              <div class="form-group">
+                <label for="time-date-data">Time and Date of Data Reading</label>
+
+                <div class="form-group row">
+                  <label for="time-date-data1" class="col-2 col-form-label">From</label>
+                  <div class="col-10">
+                    <input class="form-control" type="datetime-local"  id="time-date-data1">
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label for="time-date-data2" class="col-2 col-form-label">To</label>
+                  <div class="col-10">
+                    <input class="form-control" type="datetime-local" id="time-date-data2">
+                  </div>
+                </div>
+
+              <div class="d-flex justify-content-end">
+                <button type="button" class="p-2 btn btn-outline-success mx-3">Apply Filter</button>
+                <button type="button" class="p-2 btn btn-outline-primary">Reset Filter</button>
+              </div>
+            </div><!--End of time and date -->
+          </form>
+          <!--Insert table here -->
+          <div class="card-block">
+            <hr>
+            <div class="table-responsive mb-4">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Data Type</th>
+                    <th>Data Value</th>
+                    <th>Time and Date of Data Reading</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <th scope="row">dummy</th>
+                  <td>dummy</td>
+                  <td>dummy</td>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="d-flex justify-content-start">
+              <a href="city-official-dashboard.ejs" class="p-2 btn btn-outline-primary">Back</a>
+              <button type="button" class="ml-auto p-2 btn btn-outline-primary">flag</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      <!-- End of Add New Data Point -->
+
+
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+  </body>
+</html>
