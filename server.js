@@ -17,7 +17,7 @@ var pool = mysql.createPool({
 	connectionLimit : 25,
 	host     : 'academic-mysql.cc.gatech.edu',
 	user     : 'cs4400_56',
-	password : '#######',
+	password : '_DL4kIIw',
 	database : 'cs4400_56'
 });
 

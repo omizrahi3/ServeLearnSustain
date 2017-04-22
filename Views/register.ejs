@@ -110,8 +110,16 @@
           var password = $("#pwd").val();
           var confirmPass = $("#pwd2").val();
           var userType = $("#user_type").find(":selected").val()
-          var register = {username: username, email: email, password: password, usertype: userType};
-          var title = $("#title").val();
+          var register;
+          if (userType === 'city_official') {
+            var title = $("#title").val();
+            var city = $("#select_city").find(":selected").val();
+            var state = $("#select_state").find(":selected").val()
+            register = {username: username, email: email, password: password, usertype: userType, title: title, city: city, state: state};
+          }
+          else {
+            register = {username: username, email: email, password: password, usertype: userType};
+          }
           console.log(register);
           if (password !== confirmPass) {
               alert('Passwords do not match');
@@ -123,8 +131,6 @@
                 url: '/signup',
                 data: register,
                 success: function(data) {
-                  //location.reload();
-                  //window.location = '/';
                   alert("Registration Complete");
                   window.location = '/';
                 },
@@ -162,7 +168,8 @@
         });
 
         $("#user_type").change(function() {
-            if ($(this).find(":selected").val() === 'city official') {
+            alert("TEST");
+            if ($(this).find(":selected").val() === 'city_official') {
                 $('.collapse').collapse('show');
                 $('#title').prop('required', true);
             }

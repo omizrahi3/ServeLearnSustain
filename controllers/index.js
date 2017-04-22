@@ -1,9 +1,44 @@
-
+var mysql = require('mysql');
 
 module.exports  = function(app, pool) {
+
+    app.get('/amy', function (req, res) {
+        console.log("GET Request /");
+        res.render('');
+    });
+
     app.get('/', function (req, res) {
     		console.log("GET Request /");
     		res.render('index');
+    });
+
+    app.get('/admin-pending-city-officials', function (req, res) {
+    		console.log("GET Request /admin-pending-city-officials");
+
+        var pendingQuery = "SELECT * FROM CITY_OFFICIAL WHERE Approved IS NULL";
+
+        pool.getConnection(function(err, connection) {
+
+            connection.query(pendingQuery, function (err, rows, fields) {
+                connection.release();
+                console.log(rows);
+
+                var pending_city_officials = [];
+                rows.forEach(function(record) {
+                    var pending_official = {
+                      user : record.User,
+                      title : record.Title,
+                      approved : record.Approved,
+                      city : record.City,
+                      state : record.State
+                    };
+                    pending_city_officials.push(pending_official);
+                });
+                console.log(pending_city_officials);
+                res.locals.officals = pending_city_officials;
+                res.render('admin-pending-city-officials');
+            });
+        });
     });
 
     app.post('/states', function (req, res) {
@@ -75,42 +110,93 @@ module.exports  = function(app, pool) {
 
     app.post('/signup', function (req, res) {
         console.log("GET Request /signup");
-        console.log(req.body);
-        var username = "'" + req.body.username + "'";
-        var email = "'" + req.body.email + "'";
-        var password = "'" + req.body.password + "'";
-        var user_type = "'" + req.body.usertype + "'";
 
-        var query = "INSERT INTO USER (Username, Email_Address, Password, User_Type) VALUES ("+username+","+email+" ,"+password+" ,"+user_type+" )";
-        console.log(query);
-        //INSERT INTO USER (Username, Email_Address, Password, User_Type) VALUES ("john", "john@gatech.edu", "123 456", "city_scientist");
+        console.log(req.body);
+
+        var userQuery = "INSERT INTO USER (Username, Email_Address, Password, User_Type) VALUES (?,?,?,?)";
+        var userTable = [req.body.username, req.body.email, req.body.password, req.body.usertype];
+        query1 = mysql.format(userQuery, userTable);
+        console.log(query1);
 
         pool.getConnection(function(err, connection) {
-            connection.query(query, function (err, rows, fields) {
-                connection.release();
+            connection.query(query1, function (err, rows, fields) {
                 if (err) {
+                  console.log(err);
+                  connection.release();
                   return res.status(400).send('User Already Exists');
                 }
                 else {
-                  return res.status(200).json({
-                      success: true,
-                      message: 'Signup Success'
-                  });
+                  if (req.body.usertype === 'city_official') {
+                    var coQuery = "INSERT INTO CITY_OFFICIAL (User, Title, Approved, City, State) VALUES (?,?,?,?,?)";
+                    var coTable = [req.body.username, req.body.title, null, req.body.city, req.body.state];
+                    query2 = mysql.format(coQuery, coTable);
+                    console.log(query2);
+                    connection.query(query2, function (err, rows, fields) {
+                        if (err) {
+                          console.log(err);
+                          connection.release();
+                          return res.status(400).send('Unable to Create User');
+                        }
+                        else {
+                          connection.release();
+                          return res.status(200).json({
+                              success: true,
+                              message: 'Signup Success'
+                          });
+                        }
+                    });
+                  }
+                  else {
+                    connection.release();
+                    return res.status(200).json({
+                        success: true,
+                        message: 'Signup Success'
+                    });
+                  }
                 }
             });
         });
-
-        /*
-        if (users.indexOf(req.body.username) !== -1) {
-            return res.status(400).send('User Already Exists');
-        }
-        else {
-            users.push(req.body.username);
-            return res.status(200).json({
-                success: true,
-                message: 'Signup Success'
-            });
-        }
-        */
     });
+
+    app.post('/signin', function (req, res) {
+    		console.log("GET Request /signin");
+        console.log(req.body);
+
+
+        //var userQuery = "SELECT * FROM USER WHERE Username = ? AND Password = ?";
+        //var userTable = [req.body.username, req.body.password];
+        //query1 = mysql.format(userQuery, userTable);
+        var userQuery = "SELECT * FROM USER WHERE Username = ?";
+        var userTable = [req.body.username];
+        query1 = mysql.format(userQuery, userTable);
+        console.log(query1);
+
+        pool.getConnection(function(err, connection) {
+            connection.query(query1, function (err, rows, fields) {
+                if (err || rows.length === 0) {
+                  return res.status(400).send('User Does Not Exist');
+                }
+                else {
+                  console.log(rows[0].Password);
+                  if (req.body.password !== rows[0].Password ) {
+                     return res.status(400).send('Bad Password');
+                  }
+                  else {
+                    if (rows[0].User_Type === 'admin') {
+                        res.render('admin-dashboard');
+                        //res.render('admin-dashboard');
+                    }
+                    else if (rows[0].User_Type === 'city_scientist') {
+                        res.render('data-scientist');
+                        //res.render('data-scientist');
+                    }
+                    else {
+                        res.render('city-official-dashboard');
+                    }
+                  }
+                }
+            });
+        });
+    });
+
 };
