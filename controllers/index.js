@@ -145,6 +145,34 @@ module.exports  = function(app, pool) {
         });
     });
 
+    app.get('/admin-pending-data-points', function (req, res) {
+    		console.log("GET Request /admin-pending-data-points");
+
+        var query = "SELECT * FROM DATA_POINT WHERE Approved IS NULL";
+
+        pool.getConnection(function(err, connection) {
+
+            connection.query(query, function (err, rows, fields) {
+                connection.release();
+                console.log(rows);
+
+                var pending_data_points = [];
+                rows.forEach(function(record) {
+                    var pending_point = {
+                      poi : record.POI_LN,
+                      datetime : record.Date_Time,
+                      datatype: record.D_Type,
+                      datavalue : record.D_Value
+                    };
+                    pending_data_points.push(pending_point);
+                });
+                console.log(pending_data_points);
+                res.locals.datapoints = pending_data_points;
+                res.render('admin-pending-data-points');
+            });
+        });
+    });
+
     app.post('/states', function (req, res) {
     		console.log("GET Request /states");
         console.log(req.body.city);
