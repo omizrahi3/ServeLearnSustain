@@ -2,16 +2,19 @@ var mysql = require('mysql');
 
 module.exports  = function(app, pool) {
 
+    //Render Login Page
+    app.get('/', function (req, res) {
+        console.log("GET Request /");
+        res.render('index');
+    });
+
+    //Render Admin Dashboard
     app.get('/admin-dashboard', function (req, res) {
         console.log("GET Request /");
         res.render('admin-dashboard');
     });
 
-    app.get('/', function (req, res) {
-    		console.log("GET Request /");
-    		res.render('index');
-    });
-
+    //CREATE a datapoint
     app.post('/datapoint', function (req, res) {
     		console.log("POST Request /datapoint");
 
@@ -35,8 +38,9 @@ module.exports  = function(app, pool) {
         });
     });
 
-    app.get('/new-location', function (req, res) {
-    		console.log("GET Request /new-location");
+    //Render New POI Page
+    app.get('/city-scientist-poi', function (req, res) {
+    		console.log("GET Request /city-scientist-poi");
 
         var query = "SELECT DISTINCT City_Name FROM CITY_STATE";
 
@@ -50,11 +54,12 @@ module.exports  = function(app, pool) {
                 });
                 res.locals.cities = cities;
                 res.locals.states = [];
-                res.render('new-location');
+                res.render('city-scientist-poi');
             });
         });
     });
 
+    //Create new POI
     app.post('/poi', function (req, res) {
     		console.log("POST Request /poi");
 
@@ -79,26 +84,31 @@ module.exports  = function(app, pool) {
         });
     });
 
+    //Reject Pending City Official
     app.post('/reject-official', function (req, res) {
     		console.log("POST Request /reject-official");
         console.log(req.body);
     });
 
+    //Accept Pending City Official
     app.post('/accept-official', function (req, res) {
     		console.log("POST Request /accept-official");
         console.log(req.body);
     });
 
+    //Reject Pending Datapoint
     app.post('/reject-datapoint', function (req, res) {
     		console.log("POST Request /reject-datapoint");
         console.log(req.body);
     });
 
+    //Accept Pending Datapoint
     app.post('/accept-datapoint', function (req, res) {
     		console.log("POST Request /accept-datapoint");
         console.log(req.body);
     });
 
+    //Render City Official Filter/Search POI Page
     app.get('/city-official-filter-POI', function (req, res) {
     		console.log("GET Request /city-official-filter-POI");
 
@@ -112,13 +122,13 @@ module.exports  = function(app, pool) {
                     pois.push(record.Location_Name);
                 });
                 res.locals.pois = pois;
-                console.log(pois);
                 connection.query(statement2, function (err, rows, fields) {
                     connection.release();
                     var cities = [];
                     rows.forEach(function(record) {
-                        pois.push(record.City_Name);
+                        cities.push(record.City_Name);
                     });
+                    console.log(cities);
                     res.locals.cities = cities;
                     res.render('city-official-filter-POI');
                 });
@@ -126,6 +136,7 @@ module.exports  = function(app, pool) {
         });
     });
 
+    //Render Admin Pending City Officials Page
     app.get('/admin-pending-city-officials', function (req, res) {
     		console.log("GET Request /admin-pending-city-officials");
 
@@ -156,6 +167,7 @@ module.exports  = function(app, pool) {
         });
     });
 
+    //Render Admin pending Datapoints page
     app.get('/admin-pending-data-points', function (req, res) {
     		console.log("GET Request /admin-pending-data-points");
 
@@ -184,6 +196,7 @@ module.exports  = function(app, pool) {
         });
     });
 
+    //Get All States associates with city
     app.post('/states', function (req, res) {
     		console.log("GET Request /states");
         console.log(req.body.city);
@@ -208,6 +221,7 @@ module.exports  = function(app, pool) {
         });
     });
 
+    //Render Register Page
     app.get('/register', function (req, res) {
         console.log("GET Request /register");
         pool.getConnection(function(err, connection) {
@@ -226,7 +240,7 @@ module.exports  = function(app, pool) {
         });
     });
 
-
+    //Create new user account
     app.post('/signup', function (req, res) {
         console.log("GET Request /signup");
 
@@ -277,6 +291,7 @@ module.exports  = function(app, pool) {
         });
     });
 
+    //Login
     app.post('/signin', function (req, res) {
     		console.log("GET Request /signin");
         console.log(req.body);
@@ -302,7 +317,7 @@ module.exports  = function(app, pool) {
                         res.render('admin-dashboard');
                     }
                     else if (rows[0].User_Type === 'city_scientist') {
-                        res.redirect('/data-scientist');
+                        res.redirect('/city-scientist-datapoint');
                     }
                     else {
                         res.render('city-official-dashboard');
@@ -313,8 +328,9 @@ module.exports  = function(app, pool) {
         });
     });
 
-    app.get('/data-scientist', function (req, res) {
-        console.log("GET Request /data-scientist");
+    //Render City Scientist Create Datapoint page
+    app.get('/city-scientist-datapoint', function (req, res) {
+        console.log("GET Request /city-scientist-datapoint");
         var query1 = "SELECT * FROM DATA_TYPE";
         pool.getConnection(function(err, connection) {
             connection.query(query1, function (err, rows, fields) {
@@ -330,9 +346,7 @@ module.exports  = function(app, pool) {
                       pois.push(record.Location_Name);
                   });
                   res.locals.pois = pois;
-                  console.log(res.locals.data_types);
-                  console.log(res.locals.pois);
-                  res.render('data-scientist');
+                  res.render('city-scientist-datapoint');
               });
             });
         });

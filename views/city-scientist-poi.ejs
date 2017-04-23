@@ -7,17 +7,11 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <link rel="stylesheet" href='css/dashboard.css'>
-    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
-
-    <script src="js/dashboard.js"></script>
-
   </head>
-
   <body>
 
     <div class="container">
-        <h1>Add a New Data Point</h1></br></br>
+        <h1>Add a new location</h1></br></br>
         <form role="form" id="poilocation" onsubmit="return false">
           <div class="form-group row">
             <label for="text" class="col-2 col-form-label">POI Location Name</label>
@@ -49,8 +43,14 @@
               <input class="form-control" type="text" id="zipcode" required>
             </div>
           </div>
-          <button type="create" class="btn btn-default">Submit</button>
-          <a class="btn btn-link" href="/admin-dashboard" role="button">Back</a>
+          <div class="form-group row">
+            <div class="col-2">
+              <a class="btn btn-link" href="/city-scientist-datapoint" role="button">Back</a>
+            </div>
+            <div class="col-6">
+              <button type="create" class="btn btn-default">Submit</button>
+            </div>
+          </div>
         </form>
     </div>
 
@@ -61,7 +61,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <script>
       (function () {
-
         $("#select_city").change(function() {
             var selected_city = {city: $(this).find(":selected").val()};
             console.log(selected_city);
@@ -86,7 +85,6 @@
           var state = $("#select_state").find(":selected").val()
           var zipcode = $("#zipcode").val();
           var poi = {poiname: poiname, city: city, state: state, zipcode: zipcode};
-          location.reload();
           $.ajax({
             type: 'POST',
             url: '/poi',
@@ -102,11 +100,7 @@
             }
           })
         });
-
-
-
       })();
-
     </script>
   </body>
 </html>

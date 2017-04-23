@@ -47,12 +47,29 @@
             </div>
           </div>
           <div class="form-group row">
-            <label for="text" class="col-2 col-form-label">Data Value</label>
+            <label for="text" class="col-2 col-form-label">Zip Code</label>
             <div class="col-6">
-              <input class="form-control" type="text" placeholder="Enter Data Value" id="datavalue" required>
+              <input class="form-control" type="text" id="zipcode" required>
             </div>
           </div>
-          <button type="create" class="btn btn-default">Submit</button>
+          <div class="form-group row">
+            <label for="text" class="col-2 col-form-label">Flagged</label>
+            <div class="col-6">
+              <input class="form-check-input" type="checkbox" value="">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="from" class="col-2 col-form-label">From</label>
+            <div class="col-2">
+              <input class="form-control" type="date" value="2011-08-19" id="from">
+            </div>
+            <label for="to" class="col-2 col-form-label">To</label>
+            <div class="col-2">
+              <input class="form-control" type="date" value="2011-08-19" id="to">
+            </div>
+          </div>
+          <button type="apply" class="btn btn-default">Apply Filter</button>
+          <button type="delete" class="btn btn-default">Reset Filter</button>
           <a class="btn btn-link" href="/admin-dashboard" role="button">Back</a>
         </form>
     </div>
@@ -65,20 +82,36 @@
     <script>
       (function () {
 
+        $("#select_city").change(function() {
+            var selected_city = {city: $(this).find(":selected").val()};
+            console.log(selected_city);
+            $.ajax({
+              type: 'POST',
+              url: '/states',
+              data: selected_city,
+              dataType: "json",
+              success: function(result) {
+                var states = result.states;
+                $("#select_state").empty();
+                states.forEach(function(state) {
+                    $("#select_state").append('<option value="'+ state +'">'+ state +'</option>');
+                });
+              }
+            });
+        });
+
         $("#datapoint").submit(function() {
-          var poi = $("#poi").val();
-          var date = $("#date").val();
-          var time = $("#time").val();
-          var datatype = $("#datatype").val();
-          var datavalue = $("#datavalue").val();
-          var datapoint = {poi: poi, date: date, time: time, datatype: datatype, datavalue: datavalue};
-          location.reload();
+          var poiname = $("#poiname").val();
+          var city = $("#select_city").find(":selected").val();
+          var state = $("#select_state").find(":selected").val()
+          var zipcode = $("#zipcode").val();
+          var poi = {poiname: poiname, city: city, state: state, zipcode: zipcode};
           $.ajax({
             type: 'POST',
-            url: '/datapoint',
-            data: datapoint,
+            url: '/poi',
+            data: poi,
             success: function(data) {
-              alert("Data Point Saved");
+              alert("POI Saved");
               location.reload();
             },
             error: function(xhr) {
@@ -88,8 +121,6 @@
             }
           })
         });
-
-
 
       })();
 
