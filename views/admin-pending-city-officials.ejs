@@ -39,8 +39,8 @@
                 <tbody>
                   <% for(var i=0; i<officials.length; i++) {%>
                     <tr>
-                      <th scope="row"><input type="checkbox" class="form-check-input ml-3"></th>
-                      <td value="<%= officials[i].username %>"><%= officials[i].username %></td>
+                      <td scope="row"><input value="checked" type="checkbox" class="form-check-input ml-3"></td>
+                      <td value="<%= officials[i].user %>" class="username"><%= officials[i].user %></td>
                       <td value="<%= officials[i].email %>"><%= officials[i].email %></td>
                       <td value="<%= officials[i].city %>"><%= officials[i].city %></td>
                       <td value="<%= officials[i].state %>"><%= officials[i].state %></td>
@@ -53,8 +53,8 @@
 
             <div class="d-flex justify-content-start">
               <a href="/admin-dashboard" class="p-2 btn btn-outline-success">Back</a>
-              <button value="rejectButton" type="button" class="ml-auto p-2 btn btn-outline-primary">Reject</button>
-              <button value="acceptButton" type="button" class="ml-auto p-2 btn btn-outline-primary">Accept</button>
+              <button id="rejectButton" type="button" class="ml-auto p-2 btn btn-outline-primary">Reject</button>
+              <button id="acceptButton" type="button" class="ml-auto p-2 btn btn-outline-primary">Accept</button>
             </div>
           </div>
         </div>
@@ -67,49 +67,65 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <script>
-    (function () {
+      $(document).ready(function() {
+        $("#rejectButton").click(function() {
+          var rejectOfficial;
+          var usernames=[];
 
-      $("#register").submit(function() {
-        var username = $("#username").val();
-        var email = $("#email").val();
-        var password = $("#pwd").val();
-        var confirmPass = $("#pwd2").val();
-        var userType = $("#user_type").find(":selected").val()
-        var register;
-        if (userType === 'city_official') {
-          var title = $("#title").val();
-          var city = $("#select_city").find(":selected").val();
-          var state = $("#select_state").find(":selected").val()
-          register = {username: username, email: email, password: password, usertype: userType, title: title, city: city, state: state};
-        }
-        else {
-          register = {username: username, email: email, password: password, usertype: userType};
-        }
-        console.log(register);
-        if (password !== confirmPass) {
-            alert('Passwords do not match');
-            return false;
-        }
-        else {
+          $("#data-points tbody tr").each(function(first, row) {
+            $row = $(row);
+            rejectOfficial = $row.find('td input:checked');
+            rejectOfficial.each(function (second, reject) {
+              var reject = $(reject).eq(0);
+              //console.log();
+              // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+              usernames.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+            })
+          });
+
+          var usernames2 = {
+            usernames: usernames
+          }
+          $.ajax({
+            type: 'POST',
+            url: '/reject-official',
+            data: usernames2,
+            success: function(result) {
+              locations.reload();
+            }
+          });
+        });// end reject button
+
+        $(document).ready(function() {
+          $("#acceptButton").click(function() {
+            var rejectOfficial;
+            var usernames=[];
+
+            $("#data-points tbody tr").each(function(first, row) {
+              $row = $(row);
+              rejectOfficial = $row.find('td input:checked');
+              rejectOfficial.each(function (second, reject) {
+                var reject = $(reject).eq(0);
+                //console.log();
+                // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+                usernames.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+              })
+            });
+
+            var usernames2 = {
+              usernames: usernames
+            }
             $.ajax({
               type: 'POST',
-              url: '/signup',
-              data: register,
-              success: function(data) {
-                alert("Registration Complete");
-                window.location = '/';
-              },
-              error: function(xhr) {
-                var response = xhr.responseText;
-                alert(response);
-                return false;
+              url: '/accept-official',
+              data: usernames2,
+              success: function(result) {
+                locations.reload();
               }
-            })
-        }
-        //return false;
-      });
+            });
+          });// end reject button
 
-    })();
+      });// end document ready
     </script>
   </body>
 </html>
