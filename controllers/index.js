@@ -89,6 +89,16 @@ module.exports  = function(app, pool) {
         console.log(req.body);
     });
 
+    app.post('/reject-datapoint', function (req, res) {
+    		console.log("POST Request /reject-datapoint");
+        console.log(req.body);
+    });
+
+    app.post('/accept-datapoint', function (req, res) {
+    		console.log("POST Request /accept-datapoint");
+        console.log(req.body);
+    });
+
     app.get('/city-official-filter-POI', function (req, res) {
     		console.log("GET Request /city-official-filter-POI");
 
@@ -102,6 +112,7 @@ module.exports  = function(app, pool) {
                     pois.push(record.Location_Name);
                 });
                 res.locals.pois = pois;
+                console.log(pois);
                 connection.query(statement2, function (err, rows, fields) {
                     connection.release();
                     var cities = [];
