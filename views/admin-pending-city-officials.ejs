@@ -71,7 +71,6 @@
         $("#rejectButton").click(function() {
           var rejectOfficial;
           var usernames=[];
-          var row = $("#data-points tbody tr").eq(2).find('td').eq(2).text();
 
           $("#data-points tbody tr").each(function(first, row) {
             $row = $(row);
@@ -96,6 +95,35 @@
             }
           });
         });// end reject button
+
+        $(document).ready(function() {
+          $("#acceptButton").click(function() {
+            var rejectOfficial;
+            var usernames=[];
+
+            $("#data-points tbody tr").each(function(first, row) {
+              $row = $(row);
+              rejectOfficial = $row.find('td input:checked');
+              rejectOfficial.each(function (second, reject) {
+                var reject = $(reject).eq(0);
+                //console.log();
+                // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+                usernames.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+              })
+            });
+
+            var usernames2 = {
+              usernames: usernames
+            }
+            $.ajax({
+              type: 'POST',
+              url: '/accept-official',
+              data: usernames2,
+              success: function(result) {
+                locations.reload();
+              }
+            });
+          });// end reject button
 
       });// end document ready
     </script>
