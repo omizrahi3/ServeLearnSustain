@@ -16,58 +16,97 @@
 
   <body>
 
-
-    <!-- City Scientists Functionalities -->
-
-        <!-- Add a New Location -->
-        <div class="container">
-          <div class="main">
-            <div class="card mt-5">
-              <form class="card-block">
-                  <h2 class="display-5 text-center">Add a New Location</h2>
-                  <!-- POI location Name -->
-                  <div class="form-group">
-                    <label for="poi-new-location-name">POI location Name</label>
-                    <input class="form-control" type="text" id="poi-new-location-name">
-                  </div>
-                  <!-- City -->
-                  <div class="form-group">
-                    <label for="new-city">City</label>
-                    <select class="custom-select mx-4" id="new-city">
-                      <option selected>Select City</option>
-                    </select>
-                  </div>
-                  <!-- State -->
-                  <div class="form-group">
-                    <label for="new-state">State</label>
-                    <select class="custom-select mx-4" id="new-state">
-                      <!-- You should not hardcode values for dropdown menu -->
-                      <option selected>Select State</option>
-                    </select>
-                  </div>
-                  <!-- ZipCode -->
-                  <div class="form-group">
-                    <label for="new-zip">Zip Code</label>
-                    <div class="row">
-                      <input class="mx-3 form-control col-md-6" type="number" id="new-zip">
-                    </div>
-                  </div>
-
-                  <div class="d-flex justify-content-start">
-                    <a href="/data-scientist" class="p-2 btn btn-outline-success">Back</a>
-                    <button type="button" class="ml-auto p-2 btn btn-outline-primary">Submit</button>
-                  </div>
-                </form>
-              </div>
+    <div class="container">
+        <h1>Add a New Data Point</h1></br></br>
+        <form role="form" id="poilocation" onsubmit="return false">
+          <div class="form-group row">
+            <label for="text" class="col-2 col-form-label">POI Location Name</label>
+            <div class="col-6">
+              <input class="form-control" type="text" id="poiname" required>
             </div>
           </div>
-
+          <div class="form-group row">
+            <label for="city" class="col-2 col-form-label">City</label>
+            <div class="col-6">
+              <select id="select_city" class="custom-select">
+                <option selected>Select City</option>
+                <% for(var i=0; i<cities.length; i++) {%>
+                  <option value="<%= cities[i] %>"><%= cities[i] %></option>
+                <% } %>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="state" class="col-2 col-form-label">State</label>
+            <div class="col-6">
+              <select id="select_state" class="custom-select">
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="text" class="col-2 col-form-label">Zip Code</label>
+            <div class="col-6">
+              <input class="form-control" type="text" id="zipcode" required>
+            </div>
+          </div>
+          <button type="create" class="btn btn-default">Submit</button>
+          <a class="btn btn-link" href="/admin-dashboard" role="button">Back</a>
+        </form>
+    </div>
 
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script>
+      (function () {
 
+        $("#select_city").change(function() {
+            var selected_city = {city: $(this).find(":selected").val()};
+            console.log(selected_city);
+            $.ajax({
+              type: 'POST',
+              url: '/states',
+              data: selected_city,
+              dataType: "json",
+              success: function(result) {
+                var states = result.states;
+                $("#select_state").empty();
+                states.forEach(function(state) {
+                    $("#select_state").append('<option value="'+ state +'">'+ state +'</option>');
+                });
+              }
+            });
+        });
+
+        $("#poilocation").submit(function() {
+          var poiname = $("#poiname").val();
+          var city = $("#select_city").find(":selected").val();
+          var state = $("#select_state").find(":selected").val()
+          var zipcode = $("#zipcode").val();
+          var poi = {poiname: poiname, city: city, state: state, zipcode: zipcode};
+          location.reload();
+          $.ajax({
+            type: 'POST',
+            url: '/poi',
+            data: poi,
+            success: function(data) {
+              alert("POI Saved");
+              location.reload();
+            },
+            error: function(xhr) {
+              var response = xhr.responseText;
+              alert(response);
+              return false;
+            }
+          })
+        });
+
+
+
+      })();
+
+    </script>
   </body>
 </html>

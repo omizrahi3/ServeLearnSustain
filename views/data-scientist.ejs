@@ -16,69 +16,114 @@
 
   <body>
 
-
-    <!-- City Scientists Functionalities -->
-    <!-- Add New Data Point -->
     <div class="container">
-      <div class="main">
-        <div class="card mt-5">
-          <form class="card-block">
-              <h2 class="display-5 text-center">Add a New Data Point</h2>
-              <!-- POI location Name -->
-              <div class="form-group">
-                <label for="poi-location-name">POI location Name</label>
-                <div class="row">
-                  <select class="ml-3 custom-select col-sm-6" id="poi-location-name">
-                    <% for(var i=0; i<pois.length; i++) {%>
-                      <option value="<%= pois[i] %>"><%= pois[i] %></option>
-                    <% } %>
-                  </select>
-                  <div class="col-sm-3"><a href="/new-location">Add New Location</a></div>
-                </div>
-              </div>
-              <!-- Time and Date of Data Reading -->
-              <div class="form-group row">
-                <label for="example-date-input" class="col-2 col-form-label">Date</label>
-                <div class="col-10">
-                  <input class="form-control" type="date" value="2011-08-19" id="example-date-input">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="example-time-input" class="col-2 col-form-label">Time</label>
-                <div class="col-10">
-                  <input class="form-control" type="time" value="13:45:00" id="example-time-input">
-                </div>
-              </div>
-              <!-- Data type -->
-              <div class="form-group">
-                <label for="data-type">Data Type</label>
-                <select id="selected-data-type" class="custom-select">
-                  <% for(var i=0; i<data_types.length; i++) {%>
-                    <option value="<%= data_types[i] %>"><%= data_types[i] %></option>
-                  <% } %>
-                </select>
-              </div>
-              <!-- Data Value -->
-              <div class="form-group">
-                <label for="dataValue">Data Value</label>
-                <input class="form-control" type="text" id="dataValue">
-              </div>
-
-              <div class="d-flex justify-content-start">
-                <button type="button" class="p-2 btn btn-outline-success">Back</button>
-                <button type="button" class="ml-auto p-2 btn btn-outline-primary">Submit</button>
-              </div>
-            </form>
+        <h1>Add a New Data Point</h1></br></br>
+        <form role="form" id="datapoint" onsubmit="return false">
+          <div class="form-group row">
+            <label for="poi" class="col-2 col-form-label">POI location Name</label>
+            <div class="col-6">
+              <select class="custom-select" id="poi">
+                <% for(var i=0; i<pois.length; i++) {%>
+                  <option value="<%= pois[i] %>"><%= pois[i] %></option>
+                <% } %>
+              </select>
+            </div>
+            <div class="col-sm-4"><a href="/new-location">Add New Location</a></div>
           </div>
-        </div>
-      </div>
-      <!-- End of Add New Data Point -->
+          <div class="form-group row">
+            <label for="date" class="col-2 col-form-label">Date</label>
+            <div class="col-6">
+              <input class="form-control" type="date" value="2011-08-19" id="date">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="time" class="col-2 col-form-label">Time</label>
+            <div class="col-6">
+              <input class="form-control" type="time" value="13:45:00" id="time">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="datatype" class="col-2 col-form-label">Date Type</label>
+            <div class="col-6">
+              <select id="datatype" class="custom-select">
+                <% for(var i=0; i<data_types.length; i++) {%>
+                  <option value="<%= data_types[i] %>"><%= data_types[i] %></option>
+                <% } %>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="text" class="col-2 col-form-label">Data Value</label>
+            <div class="col-6">
+              <input class="form-control" type="text" placeholder="Enter Data Value" id="datavalue" required>
+            </div>
+          </div>
+          <button type="create" class="btn btn-default">Submit</button>
+          <a class="btn btn-link" href="/admin-dashboard" role="button">Back</a>
+        </form>
+    </div>
 
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script>
+      (function () {
 
+        $("#datapoint").submit(function() {
+          var poi = $("#poi").val();
+          var date = $("#date").val();
+          var time = $("#time").val();
+          var datatype = $("#datatype").val();
+          var datavalue = $("#datavalue").val();
+          var datapoint = {poi: poi, date: date, time: time, datatype: datatype, datavalue: datavalue};
+          location.reload();
+          $.ajax({
+            type: 'POST',
+            url: '/datapoint',
+            data: datapoint,
+            success: function(data) {
+              alert("Data Point Saved");
+              location.reload();
+            },
+            error: function(xhr) {
+              var response = xhr.responseText;
+              alert(response);
+              return false;
+            }
+          })
+          // if (userType === 'city_official') {
+          //   var title = $("#title").val();
+          //   var city = $("#select_city").find(":selected").val();
+          //   var state = $("#select_state").find(":selected").val()
+          //   register = {username: username, email: email, password: password, usertype: userType, title: title, city: city, state: state};
+          // }
+          // else {
+          //   register = {username: username, email: email, password: password, usertype: userType};
+          // }
+          // console.log(register);
+          // $.ajax({
+          //   type: 'POST',
+          //   url: '/signup',
+          //   data: register,
+          //   success: function(data) {
+          //     alert("Registration Complete");
+          //     window.location = '/';
+          //   },
+          //   error: function(xhr) {
+          //     var response = xhr.responseText;
+          //     alert(response);
+          //     return false;
+          //   }
+          // })
+          //return false;
+        });
+
+
+
+      })();
+
+    </script>
   </body>
 </html>
