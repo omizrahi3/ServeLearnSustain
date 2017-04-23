@@ -83,17 +83,18 @@
               usernames.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
             })
           });
-          console.log(usernames);
-          // var table = $("#data-points tbody");
-          // alert(table.text());
-          // table.find('tr').each(function(i, row) {
-          //   alert("test");
-          //   alert(row);
-          //   var $tds = $(this).find('td');
-          //   checkmark = $(row).eq(0);
-          //   name = $tds.eq(1).text();
-          //   alert(checkmark);
-          // })
+
+          var usernames2 = {
+            usernames: usernames
+          }
+          $.ajax({
+            type: 'POST',
+            url: '/reject-official',
+            data: usernames2,
+            success: function(result) {
+              locations.reload();
+            }
+          });
         });// end reject button
 
       });// end document ready
