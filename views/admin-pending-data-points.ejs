@@ -35,11 +35,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <th scope="row"><input type="checkbox" class="form-check-input ml-3"></th>
-                  <td>dummy</td>
-                  <td>dummy</td>
-                  <td>dummy</td>
-                  <td>dummy</td>
+                  <% for(var i=0; i<datapoints.length; i++) {%>
+                    <tr>
+                      <td scope="row"><input value="checked" type="checkbox" class="form-check-input ml-3"></td>
+                      <td value="<%= datapoints[i].poi %>" class="username"><%= datapoints[i].poi %></td>
+                      <td value="<%= datapoints[i].datetime %>"><%= datapoints[i].datetime %></td>
+                      <td value="<%= datapoints[i].datatype %>"><%= datapoints[i].datatype %></td>
+                      <td value="<%= datapoints[i].datavalue %>"><%= datapoints[i].datavalue %></td>
+                    </tr>
+                  <% } %>
                 </tbody>
               </table>
             </div>
@@ -56,8 +60,69 @@
 
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script>
+
+        $(document).ready(function() {
+          $("#rejectButton").click(function() {
+            var rejectpoint;
+            var datapoints=[];
+
+            $("#data-points tbody tr").each(function(first, row) {
+              $row = $(row);
+              rejectpoint = $row.find('td input:checked');
+              rejectpoint.each(function (second, reject) {
+                var reject = $(reject).eq(0);
+                //console.log();
+                // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+                datapoints.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+              })
+            });
+
+            var datapoints2 = {
+              datapoints: datapoints
+            }
+            $.ajax({
+              type: 'POST',
+              url: '/reject-datapoint',
+              data: datapoints,
+              success: function(result) {
+                locations.reload();
+              }
+            });
+          });// end reject button
+
+          $("#acceptButton").click(function() {
+            var acceptpoint;
+            var datapoints=[];
+
+            $("#data-points tbody tr").each(function(first, row) {
+              $row = $(row);
+              acceptpoint = $row.find('td input:checked');
+              acceptpoint.each(function (second, accept) {
+                var accept = $(accept).eq(0);
+                //console.log();
+                // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+                datapoints.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+              })
+            });
+
+            var datapoints2 = {
+              datapoints : datapoints
+            }
+            $.ajax({
+              type: 'POST',
+              url: '/accept-datapoint',
+              data: datapoints2,
+              success: function(result) {
+                locations.reload();
+              }
+            });
+          });// end accept button
+
+      });// end document ready
+    </script>
   </body>
 </html>
