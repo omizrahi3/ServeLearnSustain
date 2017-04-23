@@ -84,6 +84,11 @@ module.exports  = function(app, pool) {
         console.log(req.body);
     });
 
+    app.post('/accept-official', function (req, res) {
+    		console.log("POST Request /accept-official");
+        console.log(req.body);
+    });
+
     app.get('/city-official-filter-POI', function (req, res) {
     		console.log("GET Request /city-official-filter-POI");
 
