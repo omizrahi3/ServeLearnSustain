@@ -78,6 +78,8 @@ SELECT State_Name FROM CITY_STATE WHERE City_Name='Springfield';
 INSERT INTO USER (Username, Email_Address, Password, User_Type) VALUES ('john', 'john@gatech.edu', '123456', 'city_scientist');
 INSERT INTO CITY_OFFICIAL(User, Title, Approved, City) VALUES ('john', 'Mayor', 1, 'Atlanta', 'Georgia');
 
+INSERT INTO DATA_POINT (Date_Time, POI_LN, Approved, D_Type, D_Value) VALUES ('2017-01-30 04:11:00', 'Emory', NULL, 'Air Quality', 50);
+
 CREATE TABLE USER
 ( Username VARCHAR(60) PRIMARY KEY,
  Email_Address VARCHAR(60) NOT NULL,

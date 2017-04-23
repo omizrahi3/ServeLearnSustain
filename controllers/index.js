@@ -136,6 +136,24 @@ module.exports  = function(app, pool) {
         });
     });
 
+    //Render City Official Filter/Search POI Page
+    app.get('/city-official-POI-report', function (req, res) {
+    		console.log("GET Request /city-official-POI-report");
+        res.render('city-official-POI-report');
+    });
+
+    //Render Admin Dashboard
+    app.get('/admin-dashboard', function (req, res) {
+    		console.log("GET Request /admin-dashboard");
+        res.render('admin-dashboard');
+    });
+
+    //Render City Official Dashboard
+    app.get('/city-official-dashboard', function (req, res) {
+    		console.log("GET Request /city-official-dashboard");
+        res.render('city-official-dashboard');
+    });
+
     //Render Admin Pending City Officials Page
     app.get('/admin-pending-city-officials', function (req, res) {
     		console.log("GET Request /admin-pending-city-officials");
@@ -221,6 +239,189 @@ module.exports  = function(app, pool) {
         });
     });
 
+    //Filter Datapoints
+    app.post('/filterdatapoints', function (req, res) {
+    		console.log("GET Request /filterdatapoints");
+        console.log(req.body);
+
+        var query = "SELECT * FROM DATA_POINT WHERE POI_LN = ?";
+        var table = [req.body.poi];
+
+        if (req.body.datatype !== "") {
+          query = query+" AND D_Type = ?";
+          table.push(req.body.datatype);
+        }
+        if (req.body.minValue !== "") {
+
+          query = query+" AND D_Value >= ?";
+          table.push(Number(req.body.minValue));
+        }
+        if (req.body.maxValue !== "") {
+          query = query+" AND D_Value <= ?";
+          table.push(Number(req.body.maxValue));
+        }
+        if (req.body.minDate !== " ") {
+          query = query+" AND Date_Time >= ?";
+          table.push(req.body.minDate);
+        }
+        if (req.body.maxDate !== " ") {
+          query = query+" AND Date_Time <= ?";
+          table.push(req.body.maxDate);
+        }
+
+        statement = mysql.format(query, table);
+        console.log(statement);
+
+        pool.getConnection(function(err, connection) {
+            connection.query(statement, function (err, rows) {
+                connection.release();
+                console.log(rows);
+                rows.forEach(function(record) {
+                    console.log(record);
+                });
+                return res.status(200).json({
+                    success: true,
+                    datapoints: rows
+                });
+            });
+        });
+    });
+
+    //Filter POIs
+    app.post('/filterpois', function (req, res) {
+    		console.log("GET Request /filterpois");
+        console.log(req.body);
+        var flaggedAsNum = Number(req.body.flagged);
+        var query = "SELECT * FROM POI WHERE Flagged = ?";
+        var table = [flaggedAsNum];
+        if (req.body.poi !== "") {
+          query = query+" AND Location_Name = ?";
+          table.push(req.body.poi);
+        }
+        if (req.body.city !== "") {
+          query = query+" AND City = ?";
+          table.push(req.body.city);
+        }
+        if (req.body.state !== "") {
+          query = query+" AND State = ?";
+          table.push(req.body.state);
+        }
+        if (req.body.zipcode !== "") {
+          query = query+" AND Zip_Code = ?";
+          table.push(req.body.zipcode);
+        }
+        if (req.body.datefrom !== "" && req.body.dateto !== "") {
+          query = query+" AND Date_Flagged >= ?";
+          table.push(req.body.datefrom);
+          query = query+" AND Date_Flagged <= ?";
+          table.push(req.body.dateto);
+        }
+        statement = mysql.format(query, table);
+        console.log(statement);
+
+        pool.getConnection(function(err, connection) {
+
+            connection.query(statement, function (err, rows) {
+                connection.release();
+                console.log(rows);
+                rows.forEach(function(record) {
+                    console.log(record);
+                });
+                return res.status(200).json({
+                    success: true,
+                    pois: rows
+                });
+            });
+        });
+    });
+
+    //Flag POI
+    app.post('/flagpoi', function (req, res) {
+        console.log("GET Request /flagpoi");
+        console.log(req.body);
+
+        var statement = "UPDATE POI SET Flagged = 1 WHERE Location_Name = ?";
+        var table = [req.body.poi];
+        statement = mysql.format(statement, table);
+        console.log(statement);
+
+        pool.getConnection(function(err, connection) {
+            connection.query(statement, function (err, rows) {
+                console.log(rows);
+                connection.release();
+                return res.status(200).json({
+                    success: true,
+                });
+            });
+        });
+    });
+
+    //Flag POI
+    app.post('/unflagpoi', function (req, res) {
+        console.log("GET Request /unflagpoi");
+
+        var statement = "UPDATE POI SET Flagged = 0 WHERE Location_Name = ?";
+        var table = [req.body.poi];
+        statement = mysql.format(statement, table);
+        console.log(statement);
+
+        pool.getConnection(function(err, connection) {
+            connection.query(statement, function (err, rows) {
+                console.log(rows);
+                connection.release();
+                return res.status(200).json({
+                    success: true,
+                });
+            });
+        });
+    });
+
+    //Render POI Detail
+    app.get('/city-official-POI-detail', function (req, res) {
+        console.log("GET Request /poidetail");
+        console.log(req.query.poi);
+        var statement = "SELECT * FROM DATA_TYPE";
+        pool.getConnection(function(err, connection) {
+            connection.query(statement, function (err, rows, fields) {
+                var data_types = [];
+                rows.map(function(record) {
+                    data_types.push(record.Type);
+                });
+                res.locals.data_types = data_types;
+                var query = "SELECT * FROM POI WHERE Location_Name = ?";
+                var table = [req.query.poi];
+                var statement2 = mysql.format(query, table);
+                connection.query(statement2, function (err, rows, fields) {
+                    connection.release();
+                    res.locals.poi = rows[0].Location_Name;
+                    res.locals.flagged = rows[0].Flagged;
+                    console.log(rows[0]);
+                    res.render('city-official-POI-detail');
+                });
+            });
+          });
+    });
+
+    /*
+    //Render POI Detail
+    app.get('/poidetail', function (req, res) {
+        console.log("GET Request /poidetail");
+        console.log(req.query.poi);
+        var statement = "SELECT * FROM DATA_TYPE";
+        pool.getConnection(function(err, connection) {
+            connection.query(statement, function (err, rows, fields) {
+              var data_types = [];
+              rows.map(function(record) {
+                  data_types.push(record.Type);
+              });
+              res.locals.data_types = data_types;
+              res.locals.poi = req.query.poi;
+              res.render('city-official-POI-detail');
+            });
+          });
+    });
+    */
+
     //Render Register Page
     app.get('/register', function (req, res) {
         console.log("GET Request /register");
@@ -241,7 +442,8 @@ module.exports  = function(app, pool) {
     });
 
     //Create new user account
-    app.post('/signup', function (req, res) {
+    /*
+    app.post('/signup2', function (req, res) {
         console.log("GET Request /signup");
 
         console.log(req.body);
@@ -290,6 +492,84 @@ module.exports  = function(app, pool) {
             });
         });
     });
+    */
+
+    //Create new City Scientist or City Official
+    app.post('/signup', function (req, res) {
+        console.log("GET Request /signup");
+
+        var query = "INSERT INTO USER (Username, Email_Address, Password, User_Type) VALUES (?,?,?,?)";
+        var table = [req.body.username, req.body.email, req.body.password, req.body.usertype];
+        var statement = mysql.format(query, table);
+
+        //Register City Scientist
+        if (req.body.usertype === 'city_scientist') {
+            pool.getConnection(function(err, connection) {
+                connection.query(statement, function (err, result) {
+                    connection.release();
+                    if (err) {
+                        return res.status(400).send('User Already Exists');
+                    }
+                    else {
+                        return res.status(200).json({
+                            success: true,
+                            message: 'Signup Success'
+                        });
+                    }
+                });
+            });
+        }
+        //Register City Official
+        else {
+            pool.getConnection(function(err, connection) {
+                connection.beginTransaction(function(err) {
+                    if (err) {
+                      connection.release();
+                      return res.status(400).send('User Already Exists');
+                    }
+                    connection.query(statement, function (error, result) {
+                        if (error) {
+                            return connection.rollback(function() {
+                                connection.release();
+                                return res.status(400).send('User Already Exists');
+                            });
+                        }
+                        else {
+                            var coQuery = "INSERT INTO CITY_OFFICIAL (User, Title, Approved, City, State) VALUES (?,?,?,?,?)";
+                            var coTable = [req.body.username, req.body.title, null, req.body.city, req.body.state];
+                            coStatement = mysql.format(coQuery, coTable);
+
+                            connection.query(coStatement, function (err, rows, fields) {
+                                if (err) {
+                                    return connection.rollback(function() {
+                                        connection.release();
+                                        return res.status(400).send('User Already Exists');
+                                    });
+                                }
+                                else {
+                                    connection.commit(function(err) {
+                                        if (err) {
+                                              return connection.rollback(function() {
+                                                  connection.release();
+                                                  return res.status(400).send('User Already Exists');
+                                            });
+                                        }
+                                        else {
+                                            connection.release();
+                                            return res.status(200).json({
+                                                success: true,
+                                                message: 'Signup Success'
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        }
+    });
 
     //Login
     app.post('/signin', function (req, res) {
@@ -314,13 +594,13 @@ module.exports  = function(app, pool) {
                   }
                   else {
                     if (rows[0].User_Type === 'admin') {
-                        res.render('admin-dashboard');
+                        res.redirect('admin-dashboard');
                     }
                     else if (rows[0].User_Type === 'city_scientist') {
                         res.redirect('/city-scientist-datapoint');
                     }
                     else {
-                        res.render('city-official-dashboard');
+                        res.redirect('city-official-dashboard');
                     }
                   }
                 }
