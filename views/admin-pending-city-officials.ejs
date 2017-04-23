@@ -67,37 +67,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <script>
-      $(document).ready(function() {
-        $("#rejectButton").click(function() {
-          var rejectOfficial;
-          var usernames=[];
-
-          $("#data-points tbody tr").each(function(first, row) {
-            $row = $(row);
-            rejectOfficial = $row.find('td input:checked');
-            rejectOfficial.each(function (second, reject) {
-              var reject = $(reject).eq(0);
-              //console.log();
-              // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
-              usernames.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
-            })
-          });
-
-          var usernames2 = {
-            usernames: usernames
-          }
-          $.ajax({
-            type: 'POST',
-            url: '/reject-official',
-            data: usernames2,
-            success: function(result) {
-              locations.reload();
-            }
-          });
-        });// end reject button
 
         $(document).ready(function() {
-          $("#acceptButton").click(function() {
+          $("#rejectButton").click(function() {
             var rejectOfficial;
             var usernames=[];
 
@@ -117,13 +89,41 @@
             }
             $.ajax({
               type: 'POST',
-              url: '/accept-official',
+              url: '/reject-official',
               data: usernames2,
               success: function(result) {
                 locations.reload();
               }
             });
           });// end reject button
+
+          $("#acceptButton").click(function() {
+            var acceptOfficial;
+            var usernames=[];
+
+            $("#data-points tbody tr").each(function(first, row) {
+              $row = $(row);
+              acceptOfficial = $row.find('td input:checked');
+              acceptOfficial.each(function (second, accept) {
+                var accept = $(accept).eq(0);
+                //console.log();
+                // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+                usernames.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+              })
+            });
+
+            var usernames2 = {
+              usernames: usernames
+            }
+            $.ajax({
+              type: 'POST',
+              url: '/accept-official',
+              data: usernames2,
+              success: function(result) {
+                locations.reload();
+              }
+            });
+          });// end accept button
 
       });// end document ready
     </script>
