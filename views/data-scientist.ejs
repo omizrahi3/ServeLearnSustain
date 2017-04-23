@@ -29,21 +29,33 @@
                 <label for="poi-location-name">POI location Name</label>
                 <div class="row">
                   <select class="ml-3 custom-select col-sm-6" id="poi-location-name">
+                    <% for(var i=0; i<pois.length; i++) {%>
+                      <option value="<%= pois[i] %>"><%= pois[i] %></option>
+                    <% } %>
                   </select>
                   <div class="col-sm-3"><a href="/new-location">Add New Location</a></div>
                 </div>
               </div>
               <!-- Time and Date of Data Reading -->
-              <div class="form-group">
-                <label for="time-date-data">Time and Date of Data Reading</label>
-                <input class="form-control" type="datetime-local" id="time-date-data">
+              <div class="form-group row">
+                <label for="example-date-input" class="col-2 col-form-label">Date</label>
+                <div class="col-10">
+                  <input class="form-control" type="date" value="2011-08-19" id="example-date-input">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="example-time-input" class="col-2 col-form-label">Time</label>
+                <div class="col-10">
+                  <input class="form-control" type="time" value="13:45:00" id="example-time-input">
+                </div>
               </div>
               <!-- Data type -->
               <div class="form-group">
-                <label for="dataType">Data Type</label>
-                <select class="custom-select" id="dataType">
-                  <!-- You should not hardcode values for dropdown menu -->
-                  <option selected>Data Type</option>
+                <label for="data-type">Data Type</label>
+                <select id="selected-data-type" class="custom-select">
+                  <% for(var i=0; i<data_types.length; i++) {%>
+                    <option value="<%= data_types[i] %>"><%= data_types[i] %></option>
+                  <% } %>
                 </select>
               </div>
               <!-- Data Value -->
@@ -64,7 +76,7 @@
 
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 

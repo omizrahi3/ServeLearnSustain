@@ -15,7 +15,7 @@ module.exports  = function(app, pool) {
     app.get('/admin-pending-city-officials', function (req, res) {
     		console.log("GET Request /admin-pending-city-officials");
 
-        var pendingQuery = "SELECT * FROM CITY_OFFICIAL WHERE Approved IS NULL";
+        var pendingQuery = "SELECT u.Username, u.Email_Address, o.City, o.State, o.Title FROM USER u JOIN CITY_OFFICIAL o ON u.Username = o.User WHERE o.Approved IS NULL";
 
         pool.getConnection(function(err, connection) {
 
@@ -26,8 +26,9 @@ module.exports  = function(app, pool) {
                 var pending_city_officials = [];
                 rows.forEach(function(record) {
                     var pending_official = {
-                      user : record.User,
+                      user : record.Username,
                       title : record.Title,
+                      email: record.Email_Address,
                       approved : record.Approved,
                       city : record.City,
                       state : record.State
@@ -52,15 +53,10 @@ module.exports  = function(app, pool) {
             connection.query("SELECT State_Name FROM CITY_STATE WHERE City_Name="+city, function (err, rows, fields) {
                 connection.release();
                 console.log(rows);
-
                 var states = [];
                 rows.forEach(function(record) {
                     states.push(record.State_Name);
                 });
-
-                //res.locals.cities = cities;
-                //res.locals.states = [];
-
                 console.log(states);
                 return res.status(200).json({
                     success: true,
@@ -73,38 +69,19 @@ module.exports  = function(app, pool) {
     app.get('/register', function (req, res) {
         console.log("GET Request /register");
         pool.getConnection(function(err, connection) {
-          //var city = "'Springfield'";
-          //var statement = "SELECT * FROM CITY_STATE WHERE City_Name=";
-          //var query = statement.concat(city);
-          //console.log(query);
             connection.query("SELECT DISTINCT City_Name FROM CITY_STATE", function (err, rows, fields) {
                 connection.release();
                 var cities = [];
                 console.log(rows);
-                /*
-                rows.forEach(function(record) {
-                    console.log(record);
-                });
-                */
                 rows.map(function(record) {
-                    //console.log(record.City_Name);
                     cities.push(record.City_Name);
-                    //console.log(record.State_Name);
-                    //return lecture.lecture_id;
                 });
                 console.log(cities);
                 res.locals.cities = cities;
                 res.locals.states = [];
-                //res.locals.states = ['Florida', 'Georgia'];
-                //console.log(fields);
-                //res.locals.city_states = [{city: "Atlanta", State: "Georgia"}, {city: "Cleveland", state: "Ohio"}, {city: "Miami", state: "Florida"}];
-                //res.locals.city_state = {city: "Atlanta", state: "Georgia"};
                 res.render('register');
             });
         });
-        //res.locals.city_states = [{city: "Atlanta", State: "Georgia"}, {city: "Cleveland", state: "Ohio"}, {city: "Miami", state: "Florida"}];
-        //res.locals.city_state = {city: "Atlanta", state: "Georgia"};
-        //res.render('register');
     });
 
 
@@ -162,10 +139,6 @@ module.exports  = function(app, pool) {
     		console.log("GET Request /signin");
         console.log(req.body);
 
-
-        //var userQuery = "SELECT * FROM USER WHERE Username = ? AND Password = ?";
-        //var userTable = [req.body.username, req.body.password];
-        //query1 = mysql.format(userQuery, userTable);
         var userQuery = "SELECT * FROM USER WHERE Username = ?";
         var userTable = [req.body.username];
         query1 = mysql.format(userQuery, userTable);
@@ -173,6 +146,7 @@ module.exports  = function(app, pool) {
 
         pool.getConnection(function(err, connection) {
             connection.query(query1, function (err, rows, fields) {
+                connection.release();
                 if (err || rows.length === 0) {
                   return res.status(400).send('User Does Not Exist');
                 }
@@ -184,17 +158,40 @@ module.exports  = function(app, pool) {
                   else {
                     if (rows[0].User_Type === 'admin') {
                         res.render('admin-dashboard');
-                        //res.render('admin-dashboard');
                     }
                     else if (rows[0].User_Type === 'city_scientist') {
-                        res.render('data-scientist');
-                        //res.render('data-scientist');
+                        res.redirect('/data-scientist');
                     }
                     else {
                         res.render('city-official-dashboard');
                     }
                   }
                 }
+            });
+        });
+    });
+
+    app.get('/data-scientist', function (req, res) {
+        console.log("GET Request /data-scientist");
+        var query1 = "SELECT * FROM DATA_TYPE";
+        pool.getConnection(function(err, connection) {
+            connection.query(query1, function (err, rows, fields) {
+              var data_types = [];
+              rows.map(function(record) {
+                  data_types.push(record.Type);
+              });
+              res.locals.data_types = data_types;
+              var query2 = "SELECT * FROM POI";
+              connection.query(query2, function (err, rows, fields) {
+                  var pois = [];
+                  rows.map(function(record) {
+                      pois.push(record.Location_Name);
+                  });
+                  res.locals.pois = pois;
+                  console.log(res.locals.data_types);
+                  console.log(res.locals.pois);
+                  res.render('data-scientist');
+              });
             });
         });
     });
