@@ -23,7 +23,7 @@
             <h2 class="display-5 text-center">Pending Data Points</h2>
 
             <!-- table of data points -->
-            <div class="table-responsive mb-4">
+            <div id="point-table" class="table-responsive mb-4">
               <table class="table">
                 <thead>
                   <tr>
@@ -39,9 +39,9 @@
                     <tr>
                       <td scope="row"><input value="checked" type="checkbox" class="form-check-input ml-3"></td>
                       <td value="<%= datapoints[i].poi %>" class="username"><%= datapoints[i].poi %></td>
+                      <td value="<%= datapoints[i].datatype %>"><%= datapoints[i].datatime %></td>
+                      <td value="<%= datapoints[i].datavalue%>"><%= datapoints[i].datavalue %></td>
                       <td value="<%= datapoints[i].datetime %>"><%= datapoints[i].datetime %></td>
-                      <td value="<%= datapoints[i].datatype %>"><%= datapoints[i].datatype %></td>
-                      <td value="<%= datapoints[i].datavalue %>"><%= datapoints[i].datavalue %></td>
                     </tr>
                   <% } %>
                 </tbody>
@@ -50,8 +50,8 @@
 
             <div class="d-flex justify-content-start">
               <a href="/admin-dashboard" class="p-2 btn btn-outline-success">Back</a>
-              <button type="button" class="ml-auto p-2 btn btn-outline-primary">Reject</button>
-              <button type="button" class="ml-auto p-2 btn btn-outline-primary">Accept</button>
+              <button id="rejectButton" type="button" class="ml-auto p-2 btn btn-outline-primary">Reject</button>
+              <button id="acceptButton" type="button" class="ml-auto p-2 btn btn-outline-primary">Accept</button>
             </div>
           </div>
         </div>
@@ -67,27 +67,32 @@
 
         $(document).ready(function() {
           $("#rejectButton").click(function() {
+            alert("test");
             var rejectpoint;
             var datapoints=[];
 
-            $("#data-points tbody tr").each(function(first, row) {
+            $("#point-table tbody tr").each(function(first, row) {
               $row = $(row);
               rejectpoint = $row.find('td input:checked');
               rejectpoint.each(function (second, reject) {
                 var reject = $(reject).eq(0);
                 //console.log();
-                // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
-                datapoints.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+                alert($("#point-table tbody tr").eq(first).find('td').eq(1).text());
+                var datapointsCombo = {
+                  poi : $("#point-table tbody tr").eq(first).find('td').eq(1).text(),
+                  date-time : $("#point-table tbody tr").eq(first).find('td').eq(4).text()
+                }
+                datapoints.push(datapointsCombo);
               })
             });
 
-            var datapoints2 = {
+            var rejectPoints = {
               datapoints: datapoints
             }
             $.ajax({
               type: 'POST',
               url: '/reject-datapoint',
-              data: datapoints,
+              data: rejectPoints,
               success: function(result) {
                 locations.reload();
               }
@@ -98,24 +103,28 @@
             var acceptpoint;
             var datapoints=[];
 
-            $("#data-points tbody tr").each(function(first, row) {
+            $("#point-table tbody tr").each(function(first, row) {
               $row = $(row);
               acceptpoint = $row.find('td input:checked');
               acceptpoint.each(function (second, accept) {
                 var accept = $(accept).eq(0);
                 //console.log();
                 // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
-                datapoints.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+                var datapointsCombo = {
+                  poi : $("#point-table tbody tr").eq(first).find('td').eq(1).text(),
+                  date-time : $("#point-table tbody tr").eq(first).find('td').eq(4).text()
+                }
+                datapoints.push(datapointsCombo);
               })
             });
 
-            var datapoints2 = {
+            var acceptPoints = {
               datapoints : datapoints
             }
             $.ajax({
               type: 'POST',
               url: '/accept-datapoint',
-              data: datapoints2,
+              data: acceptPoints,
               success: function(result) {
                 locations.reload();
               }
