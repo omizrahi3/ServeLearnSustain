@@ -40,7 +40,7 @@
                   <% for(var i=0; i<officials.length; i++) {%>
                     <tr>
                       <td scope="row"><input value="checked" type="checkbox" class="form-check-input ml-3"></td>
-                      <td value="<%= officials[i].username %>"><%= officials[i].username %></td>
+                      <td value="<%= officials[i].user %>" class="username"><%= officials[i].user %></td>
                       <td value="<%= officials[i].email %>"><%= officials[i].email %></td>
                       <td value="<%= officials[i].city %>"><%= officials[i].city %></td>
                       <td value="<%= officials[i].state %>"><%= officials[i].state %></td>
@@ -70,16 +70,32 @@
       $(document).ready(function() {
         $("#rejectButton").click(function() {
           var rejectOfficial;
-          var rejectOfficialList=[];
-          $("#data-points tbody tr").each(function(i, row) {
-            alert("test");
+          var usernames=[];
+          var row = $("#data-points tbody tr").eq(2).find('td').eq(2).text();
+
+          $("#data-points tbody tr").each(function(first, row) {
             $row = $(row);
-            $rejectOfficials = $row.find('td input:checked');
-            $rejectOfficials.each(function (i, reject) {
-              alert($(reject));
+            rejectOfficial = $row.find('td input:checked');
+            rejectOfficial.each(function (second, reject) {
+              var reject = $(reject).eq(0);
+              //console.log();
+              // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+              usernames.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
             })
           });
-        });
+          console.log(usernames);
+          // var table = $("#data-points tbody");
+          // alert(table.text());
+          // table.find('tr').each(function(i, row) {
+          //   alert("test");
+          //   alert(row);
+          //   var $tds = $(this).find('td');
+          //   checkmark = $(row).eq(0);
+          //   name = $tds.eq(1).text();
+          //   alert(checkmark);
+          // })
+        });// end reject button
+
       });// end document ready
     </script>
   </body>
