@@ -12,6 +12,49 @@ module.exports  = function(app, pool) {
     		res.render('index');
     });
 
+    app.post('/datapoint', function (req, res) {
+    		console.log("POST Request /datapoint");
+
+        var datetime = req.body.date+" "+req.body.time;
+        var query = "INSERT INTO DATA_POINT (Date_Time, POI_LN, Approved, D_Type, D_Value) VALUES (?,?,?,?,?)";
+        var table = [datetime, req.body.poi, null, req.body.datatype, req.body.datavalue];
+        query = mysql.format(query, table);
+
+        pool.getConnection(function(err, connection) {
+            connection.query(query, function (err, rows, fields) {
+                connection.release();
+                if (err) {
+                  return res.status(400).send('Could Not Save Datapoint');
+                }
+                else {
+                  return res.status(200).json({
+                      success: true
+                  });
+                }
+            });
+        });
+    });
+
+    app.get('/new-location', function (req, res) {
+    		console.log("GET Request /new-location");
+
+        var query = "SELECT DISTINCT City_Name FROM CITY_STATE";
+
+        pool.getConnection(function(err, connection) {
+            connection.query(query, function (err, rows, fields) {
+                connection.release();
+                var cities = [];
+                console.log(rows);
+                rows.map(function(record) {
+                    cities.push(record.City_Name);
+                });
+                res.locals.cities = cities;
+                res.locals.states = [];
+                res.render('new-location');
+            });
+        });
+    });
+
     app.get('/admin-pending-city-officials', function (req, res) {
     		console.log("GET Request /admin-pending-city-officials");
 
