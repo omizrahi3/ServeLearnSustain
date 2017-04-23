@@ -80,20 +80,19 @@
             });
         });
 
-        $("#datapoint").submit(function() {
-          var poi = $("#poi").val();
-          var date = $("#date").val();
-          var time = $("#time").val();
-          var datatype = $("#datatype").val();
-          var datavalue = $("#datavalue").val();
-          var datapoint = {poi: poi, date: date, time: time, datatype: datatype, datavalue: datavalue};
+        $("#poilocation").submit(function() {
+          var poiname = $("#poiname").val();
+          var city = $("#select_city").find(":selected").val();
+          var state = $("#select_state").find(":selected").val()
+          var zipcode = $("#zipcode").val();
+          var poi = {poiname: poiname, city: city, state: state, zipcode: zipcode};
           location.reload();
           $.ajax({
             type: 'POST',
-            url: '/datapoint',
-            data: datapoint,
+            url: '/poi',
+            data: poi,
             success: function(data) {
-              alert("Data Point Saved");
+              alert("POI Saved");
               location.reload();
             },
             error: function(xhr) {

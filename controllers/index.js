@@ -55,6 +55,61 @@ module.exports  = function(app, pool) {
         });
     });
 
+    app.post('/poi', function (req, res) {
+    		console.log("POST Request /poi");
+
+        console.log(req.body);
+
+        var statement = "INSERT INTO POI (Location_Name, Zip_Code, City, State) VALUES (?,?,?,?)";
+        var table = [req.body.poiname, req.body.zipcode, req.body.city, req.body.state];
+        var query = mysql.format(statement, table);
+
+        pool.getConnection(function(err, connection) {
+            connection.query(query, function (err, rows, fields) {
+                connection.release();
+                if (err) {
+                  return res.status(400).send('Could Not Save POI');
+                }
+                else {
+                  return res.status(200).json({
+                      success: true
+                  });
+                }
+            });
+        });
+    });
+
+    app.post('/reject-official', function (req, res) {
+    		console.log("POST Request /reject-official");
+        console.log(req.body);
+    });
+
+    app.get('/city-official-filter-POI', function (req, res) {
+    		console.log("GET Request /city-official-filter-POI");
+
+        var statement1 = "SELECT DISTINCT Location_Name FROM POI";
+        var statement2 = "SELECT DISTINCT City_Name FROM CITY_STATE";
+
+        pool.getConnection(function(err, connection) {
+            connection.query(statement1, function (err, rows, fields) {
+                var pois = [];
+                rows.forEach(function(record) {
+                    pois.push(record.Location_Name);
+                });
+                res.locals.pois = pois;
+                connection.query(statement2, function (err, rows, fields) {
+                    connection.release();
+                    var cities = [];
+                    rows.forEach(function(record) {
+                        pois.push(record.City_Name);
+                    });
+                    res.locals.cities = cities;
+                    res.render('city-official-filter-POI');
+                });
+            });
+        });
+    });
+
     app.get('/admin-pending-city-officials', function (req, res) {
     		console.log("GET Request /admin-pending-city-officials");
 
