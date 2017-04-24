@@ -7,8 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href='css/dashboard.css'>
-    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
+
 
   </head>
 
@@ -78,8 +77,6 @@
               rejectOfficial = $row.find('td input:checked');
               rejectOfficial.each(function (second, reject) {
                 var reject = $(reject).eq(0);
-                //console.log();
-                // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
                 usernames.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
               })
             });
@@ -92,6 +89,7 @@
               url: '/reject-official',
               data: usernames2,
               success: function(result) {
+                alert('test');
                 locations.reload();
               }
             });
@@ -106,8 +104,6 @@
               acceptOfficial = $row.find('td input:checked');
               acceptOfficial.each(function (second, accept) {
                 var accept = $(accept).eq(0);
-                //console.log();
-                // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
                 usernames.push($("#data-points tbody tr").eq(first).find('td').eq(1).text());
               })
             });
@@ -120,7 +116,7 @@
               url: '/accept-official',
               data: usernames2,
               success: function(result) {
-                locations.reload();
+                  window.location = '/admin-dashboard';
               }
             });
           });// end accept button

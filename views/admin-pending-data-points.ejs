@@ -1,29 +1,29 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.10.15/datatables.min.css"/> -->
     <!-- <link rel="stylesheet" href='css/dashboard.css'>
     <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
 
-  </head>
+  <!-- </head>
 
   <body>
 
-    <!-- Admin Functionalities -->
+    Admin Functionalities -->
 
       <!-- Pending Data Points -->
-      <div class="container">
+      <!-- <div class="container">
         <div class="card mt-5">
           <div class="card-block">
-            <h2 class="display-5 text-center">Pending Data Points</h2>
+            <h2 class="display-5 text-center">Pending Data Points</h2> -->
 
             <!-- table of data points -->
-            <div id="point-table" class="table-responsive mb-4">
+            <!-- <div id="point-table" class="table-responsive mb-4">
               <table class="table">
                 <thead>
                   <tr>
@@ -46,7 +46,31 @@
                   <% } %>
                 </tbody>
               </table>
-            </div>
+            </div> -->
+
+            <!-- <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Testing</th>
+                <th>POI Location</th>
+                <th>Data Type</th>
+                <th>Data Value</th>
+                <th>Time and Date of Data Reading</th>
+            </tr>
+        </thead>
+        <tbody>
+          <% for(var i=0; i<datapoints.length; i++) {%>
+            <tr>
+              <td scope="row"><input value="checked" type="checkbox" class="form-check-input ml-3"></td>
+              <td value="<%= datapoints[i].poi %>" class="username"><%= datapoints[i].poi %></td>
+              <td value="<%= datapoints[i].datatype %>"><%= datapoints[i].datatime %></td>
+              <td value="<%= datapoints[i].datavalue%>"><%= datapoints[i].datavalue %></td>
+              <td value="<%= datapoints[i].datetime %>"><%= datapoints[i].datetime %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+
 
             <div class="d-flex justify-content-start">
               <a href="/admin-dashboard" class="p-2 btn btn-outline-success">Back</a>
@@ -55,83 +79,193 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
 
 
-    <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-    <script>
+      <!-- jQuery first, then Tether, then Bootstrap JS. -->
+      <!-- <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+      <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.15/datatables.min.js"></script>
+      <script> -->
 
-        $(document).ready(function() {
-          $("#rejectButton").click(function() {
-            alert("test");
+        <!-- // $(document).ready(function() {
+        //
+        //   $('#example').DataTable();
+        //
+        //   $("#rejectButton").click(function() {
+        //     alert("test");
+        //     var rejectpoint;
+        //     var datapoints=[];
+
+          //   $("#point-table tbody tr").each(function(first, row) {
+          //     $row = $(row);
+          //     rejectpoint = $row.find('td input:checked');
+          //     rejectpoint.each(function (second, reject) {
+          //       var reject = $(reject).eq(0);
+          //       //console.log();
+          //       alert($("#point-table tbody tr").eq(first).find('td').eq(1).text());
+          //       var datapointsCombo = {
+          //         poi : $("#point-table tbody tr").eq(first).find('td').eq(1).text(),
+          //         date-time : $("#point-table tbody tr").eq(first).find('td').eq(4).text()
+          //       }
+          //       datapoints.push(datapointsCombo);
+          //     })
+          //   });
+          //
+          //   var rejectPoints = {
+          //     datapoints: datapoints
+          //   }
+          //   $.ajax({
+          //     type: 'POST',
+          //     url: '/reject-datapoint',
+          //     data: rejectPoints,
+          //     success: function(result) {
+          //       locations.reload();
+          //     }
+          //   });
+          // });// end reject button
+          //
+          // $("#acceptButton").click(function() {
+          //   var acceptpoint;
+          //   var datapoints=[];
+          //
+          //   $("#point-table tbody tr").each(function(first, row) {
+          //     $row = $(row);
+          //     acceptpoint = $row.find('td input:checked');
+          //     acceptpoint.each(function (second, accept) {
+          //       var accept = $(accept).eq(0);
+          //       //console.log();
+          //       // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
+          //       var datapointsCombo = {
+          //         poi : $("#point-table tbody tr").eq(first).find('td').eq(1).text(),
+          //         date-time : $("#point-table tbody tr").eq(first).find('td').eq(4).text()
+          //       }
+          //       datapoints.push(datapointsCombo);
+          //     })
+          //   }); -->
+
+<!-- //             var acceptPoints = {
+//               datapoints : datapoints
+//             }
+//             $.ajax({
+//               type: 'POST',
+//               url: '/accept-datapoint',
+//               data: acceptPoints,
+//               success: function(result) {
+//                 locations.reload();
+//               }
+//             });
+//           });// end accept button
+//
+//       });// end document ready
+//     </script>
+//   </body>
+// </html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/v/dt/dt-1.10.15/datatables.min.css"/>
+    <!-- <link rel="stylesheet" href='css/dashboard.css'>
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
+
+  </head>
+
+  <body>
+    <div class="container">
+    <h1>POI REPORT</h1></br></br>
+    <div id="point-table">
+    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+              <th>Testing</th>
+              <th>POI Location</th>
+              <th>Data Type</th>
+              <th>Data Value</th>
+              <th>Time and Date of Data Reading</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+              <th>Testing</th>
+              <th>POI Location</th>
+              <th>Data Type</th>
+              <th>Data Value</th>
+              <th>Time and Date of Data Reading</th>
+          </tr>
+        </tfoot>
+        <tbody>
+          <% for(var i=0; i<datapoints.length; i++) {%>
+            <tr>
+              <td scope="row"><input value="checked" type="checkbox" class="form-check-input ml-3"></td>
+              <td value="<%= datapoints[i].poi %>" class="username"><%= datapoints[i].poi %></td>
+              <td value="<%= datapoints[i].datatype %>"><%= datapoints[i].datatype %></td>
+              <td value="<%= datapoints[i].datavalue%>"><%= datapoints[i].datavalue %></td>
+              <td value="<%= datapoints[i].datetime %>"><%= datapoints[i].datetime.toString() %></td>
+            </tr>
+          <% } %>
+        </tbody>
+    </table>
+  </div>
+    <div class="d-flex justify-content-start">
+      <a href="/admin-dashboard" class="p-2 btn btn-outline-success">Back</a>
+      <button id="rejectButton" type="button" class="ml-auto p-2 btn btn-outline-primary">Reject</button>
+      <button id="acceptButton" type="button" class="ml-auto p-2 btn btn-outline-primary">Accept</button>
+    </div>
+</div>
+
+
+      <!-- jQuery first, then Tether, then Bootstrap JS. -->
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+      <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.15/datatables.min.js"></script>
+      <script>
+      (function () {
+        $('#example').DataTable();
+
+
+        $("#rejectButton").click(function() {
             var rejectpoint;
             var datapoints=[];
-
             $("#point-table tbody tr").each(function(first, row) {
               $row = $(row);
               rejectpoint = $row.find('td input:checked');
               rejectpoint.each(function (second, reject) {
                 var reject = $(reject).eq(0);
-                //console.log();
-                alert($("#point-table tbody tr").eq(first).find('td').eq(1).text());
                 var datapointsCombo = {
-                  poi : $("#point-table tbody tr").eq(first).find('td').eq(1).text(),
-                  date-time : $("#point-table tbody tr").eq(first).find('td').eq(4).text()
+                  POI_LN : $("#point-table tbody tr").eq(first).find('td').eq(1).text(),
+                  Date_Time : $("#point-table tbody tr").eq(first).find('td').eq(4).text()
                 }
                 datapoints.push(datapointsCombo);
               })
             });
-
-            var rejectPoints = {
-              datapoints: datapoints
-            }
+            var rejectPoints = {datapoints: datapoints};
             $.ajax({
               type: 'POST',
-              url: '/reject-datapoint',
+              url: '/reject-points',
               data: rejectPoints,
-              success: function(result) {
-                locations.reload();
+              success: function(data) {
+                return false;
+              },
+              error: function(xhr) {
+                var response = xhr.responseText;
+                return false;
               }
-            });
+            })
           });// end reject button
 
-          $("#acceptButton").click(function() {
-            var acceptpoint;
-            var datapoints=[];
 
-            $("#point-table tbody tr").each(function(first, row) {
-              $row = $(row);
-              acceptpoint = $row.find('td input:checked');
-              acceptpoint.each(function (second, accept) {
-                var accept = $(accept).eq(0);
-                //console.log();
-                // alert($("#data-points tbody tr").eq(first).find('td').eq(1).text());
-                var datapointsCombo = {
-                  poi : $("#point-table tbody tr").eq(first).find('td').eq(1).text(),
-                  date-time : $("#point-table tbody tr").eq(first).find('td').eq(4).text()
-                }
-                datapoints.push(datapointsCombo);
-              })
-            });
+      })();
 
-            var acceptPoints = {
-              datapoints : datapoints
-            }
-            $.ajax({
-              type: 'POST',
-              url: '/accept-datapoint',
-              data: acceptPoints,
-              success: function(result) {
-                locations.reload();
-              }
-            });
-          });// end accept button
-
-      });// end document ready
     </script>
   </body>
 </html>

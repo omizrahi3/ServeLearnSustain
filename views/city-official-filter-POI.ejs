@@ -163,15 +163,6 @@
           }
           var filter = {poi: poi, city: city, state: state, zipcode: zipcode, flagged: flagged, datefrom: datefrom, dateto: dateto};
           console.log(filter);
-          // $('#poitable').find('tbody').append([
-          //   '<tr role="button">',
-          //       '<td id="poicell">'+'POI'+'</td>',
-          //       '<td>'+'City'+'</td>',
-          //       '<td>'+'State'+'</td>',
-          //       '<td>'+'Flagged'+'</td>',
-          //   '</tr>'
-          //   ].join(''));
-
 
           $.ajax({
             type: 'POST',

@@ -1,4 +1,5 @@
 var mysql = require('mysql');
+var moment = require('moment');
 
 module.exports  = function(app, pool) {
 
@@ -88,18 +89,87 @@ module.exports  = function(app, pool) {
     app.post('/reject-official', function (req, res) {
     		console.log("POST Request /reject-official");
         console.log(req.body);
+        var query = "UPDATE CITY_OFFICIAL SET Approved = 0 WHERE User IN (";
+        var table = [];
+        for (var i = 0; i < req.body.usernames.length; i++) {
+          if (i == req.body.usernames.length - 1) {
+            query = query+'?';
+          }
+          else {
+            query = query+'?,';
+          }
+          table.push(req.body.usernames[i]);
+        }
+        query = query+")";
+        var statement = mysql.format(query, table);
+        console.log(statement);
+        pool.getConnection(function(err, connection) {
+            connection.query(statement, function (err, rows) {
+                console.log(rows);
+                connection.release();
+                return res.status(200).json({
+                    success: true,
+                });
+            });
+        });
     });
 
     //Accept Pending City Official
     app.post('/accept-official', function (req, res) {
     		console.log("POST Request /accept-official");
         console.log(req.body);
+        var query = "UPDATE CITY_OFFICIAL SET Approved = 1 WHERE User IN (";
+        var table = [];
+        for (var i = 0; i < req.body.usernames.length; i++) {
+          if (i == req.body.usernames.length - 1) {
+            query = query+'?';
+          }
+          else {
+            query = query+'?,';
+          }
+          table.push(req.body.usernames[i]);
+        }
+        query = query+")";
+        var statement = mysql.format(query, table);
+        console.log(statement);
+        pool.getConnection(function(err, connection) {
+            connection.query(statement, function (err, rows) {
+                console.log(rows);
+                connection.release();
+                return res.status(200).json({
+                    success: true,
+                });
+            });
+        });
     });
 
     //Reject Pending Datapoint
-    app.post('/reject-datapoint', function (req, res) {
-    		console.log("POST Request /reject-datapoint");
+    app.post('/reject-points', function (req, res) {
+    		console.log("POST Request /reject-points");
         console.log(req.body);
+        var poi;
+        var datet;
+        req.body.datapoints.forEach(function(record) {
+            var datet = new Date(record.Date_Time);
+            console.log(datet);
+            poi = record.POI_LN;
+            datet = record.Date_Time;
+            //console.log(record.Date_Time);
+        });
+        var statement = "UPDATE DATA_POINT SET Approved = 0 WHERE POI_LN ('?') AND Date_Time ('?')";
+        var table = [req.body.datapoints.POI_LN, req.body.datapoints.Date_Time];
+        var query = mysql.format(statement, table);
+
+        pool.getConnection(function(err, connection) {
+            connection.query(query, function (err, rows) {
+                console.log(rows);
+                connection.release();
+                return res.status(200).json({
+                    success: true,
+                });
+            });
+        });
+
     });
 
     //Accept Pending Datapoint
@@ -139,7 +209,49 @@ module.exports  = function(app, pool) {
     //Render City Official Filter/Search POI Page
     app.get('/city-official-POI-report', function (req, res) {
     		console.log("GET Request /city-official-POI-report");
-        res.render('city-official-POI-report');
+        var statement1 = "SELECT d.POI_LN, p.City, p.State, MIN(d.D_Value) AS 'moldMin', AVG(d.D_Value) AS 'moldAvg', MAX(d.D_Value) 'moldMax',    COUNT(d.POI_LN) AS 'numpoints', p.Flagged AS 'Flag' FROM DATA_POINT d INNER JOIN POI p    ON d.POI_LN = p.Location_Name WHERE D_Type = 'Mold' and Approved = 1 GROUP BY POI_LN";
+        var statement2 = "SELECT d.POI_LN, p.City, p.State, MIN(d.D_Value) AS 'AQMin', AVG(d.D_Value) AS 'AQAvg', MAX(d.D_Value) 'AQMax',    COUNT(d.POI_LN) AS 'numpoints', p.Flagged AS 'Flag' FROM DATA_POINT d INNER JOIN POI p    ON d.POI_LN = p.Location_Name WHERE D_Type = 'Air Quality' and Approved = 1 GROUP BY POI_LN";
+        var results = [];
+        var results2 = [];
+        pool.getConnection(function(err, connection) {
+            connection.query(statement1, function (err, rows, fields) {
+                if (err) {
+                  return res.status(400).send('Could Not Save POI');
+                }
+                else {
+                  rows.forEach(function(record) {
+                      var pending = {
+                        POI_LN : record.POI_LN,
+                        City : record.City,
+                        State: record.State,
+                        numpoints: record.State,
+                        moldMin : record.moldMin,
+                        moldAvg : record.moldAvg,
+                        moldMax : record.moldMax,
+                      };
+                      results.push(pending);
+                  });
+                  connection.query(statement2, function (err, rows2, fields) {
+                      if (err) {
+                        return res.status(400).send('Could Not Save POI');
+                      }
+                      else {
+                        rows2.forEach(function(record) {
+                            for (var i = 0; i < results.length; i++) {
+                                if (results[i].POI_LN === record.POI_LN) {
+                                    results[i].AQMin = record.AQMin;
+                                    results[i].AQMax = record.AQMax;
+                                    results[i].AQAvg = record.AQAvg;
+                                }
+                            }
+                        });
+                        res.locals.results = results;
+                        res.render('city-official-POI-report');
+                      }
+                  });
+                }
+            });
+        });
     });
 
     //Render Admin Dashboard
@@ -161,7 +273,6 @@ module.exports  = function(app, pool) {
         var pendingQuery = "SELECT u.Username, u.Email_Address, o.City, o.State, o.Title FROM USER u JOIN CITY_OFFICIAL o ON u.Username = o.User WHERE o.Approved IS NULL";
 
         pool.getConnection(function(err, connection) {
-
             connection.query(pendingQuery, function (err, rows, fields) {
                 connection.release();
                 console.log(rows);
@@ -225,12 +336,10 @@ module.exports  = function(app, pool) {
 
             connection.query("SELECT State_Name FROM CITY_STATE WHERE City_Name="+city, function (err, rows, fields) {
                 connection.release();
-                console.log(rows);
                 var states = [];
                 rows.forEach(function(record) {
                     states.push(record.State_Name);
                 });
-                console.log(states);
                 return res.status(200).json({
                     success: true,
                     states: states,
@@ -401,26 +510,6 @@ module.exports  = function(app, pool) {
             });
           });
     });
-
-    /*
-    //Render POI Detail
-    app.get('/poidetail', function (req, res) {
-        console.log("GET Request /poidetail");
-        console.log(req.query.poi);
-        var statement = "SELECT * FROM DATA_TYPE";
-        pool.getConnection(function(err, connection) {
-            connection.query(statement, function (err, rows, fields) {
-              var data_types = [];
-              rows.map(function(record) {
-                  data_types.push(record.Type);
-              });
-              res.locals.data_types = data_types;
-              res.locals.poi = req.query.poi;
-              res.render('city-official-POI-detail');
-            });
-          });
-    });
-    */
 
     //Render Register Page
     app.get('/register', function (req, res) {

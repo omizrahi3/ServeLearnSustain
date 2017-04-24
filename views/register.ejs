@@ -98,7 +98,6 @@
             },
             error: function(xhr) {
               document.getElementById("login-fail").innerHTML = xhr.responseText;
-              //window.location = '/register';
             }
           })
           return false;
@@ -141,11 +140,9 @@
                 }
               })
           }
-          //return false;
         });
 
         $("#select_city").change(function() {
-            //var the_city = $(this).find(":selected").val();
             var selected_city = {city: $(this).find(":selected").val()};
             console.log(selected_city);
             $.ajax({
@@ -154,10 +151,7 @@
               data: selected_city,
               dataType: "json",
               success: function(result) {
-                //console.log(JSON.stringify(result.states));
-                //$("#select").remove();
                 var states = result.states;
-                //$("#select_state").selectpicker('refresh');
                 $("#select_state").empty();
                 states.forEach(function(state) {
                     console.log(state);
